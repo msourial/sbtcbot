@@ -27,6 +27,11 @@ export const commands: Command[] = [
     icon: "ri-shield-keyhole-line"
   },
   {
+    name: "/createwallet",
+    description: "Create wallet with biometrics",
+    icon: "ri-fingerprint-line"
+  },
+  {
     name: "/help",
     description: "Get help with commands",
     icon: "ri-question-line"

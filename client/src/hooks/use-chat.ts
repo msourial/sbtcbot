@@ -150,6 +150,11 @@ export function useChat(): UseChatResult {
         content: "Responding to voice command: \"Check my balance\"",
         messageType: 'balance',
       });
+    } else if (content.includes('createwallet') || content.includes('create wallet')) {
+      addBotMessage({
+        content: "Create Wallet with Biometrics",
+        messageType: 'createwallet',
+      });
     } else if (content.includes('send') && content.includes('sbtc')) {
       // Parse recipient and amount
       const amountMatch = content.match(/(\d+\.?\d*)\s*sbtc/i);
