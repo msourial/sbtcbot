@@ -42,8 +42,17 @@ export default function Home() {
 
   const handleVoiceMessage = (audioBlob: Blob) => {
     // In a real implementation, send the audio to the server for processing
-    // For now, we'll simulate a voice command
-    sendMessage("Check my balance", "voice");
+    // For now, we'll simulate a voice command by sending a specific message
+    // with the voice message type
+    
+    // Adding this message to let the user know voice was received
+    sendMessage("Voice command received: Check my balance", "text");
+    
+    // Wait a moment then process the simulated voice command
+    setTimeout(() => {
+      // This simulates what would happen after voice-to-text processing
+      sendCommand("/balance");
+    }, 500);
   };
 
   const toggleHelpModal = () => {
