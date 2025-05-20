@@ -87,7 +87,7 @@ export type ChatMessage = {
   id: string;
   content: string | React.ReactNode;
   isFromUser: boolean;
-  messageType: 'text' | 'voice' | 'command' | 'balance' | 'transaction' | 'history' | 'receive' | 'security' | 'processing';
+  messageType: 'text' | 'voice' | 'command' | 'balance' | 'transaction' | 'history' | 'receive' | 'security' | 'processing' | 'createwallet';
   timestamp: Date;
 };
 
