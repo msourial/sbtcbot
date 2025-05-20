@@ -77,15 +77,44 @@ export async function processNaturalLanguageCommand(text: string): Promise<any> 
   try {
     if (!process.env.ANTHROPIC_API_KEY) {
       // Return simple command extraction without AI
+      // Enhanced pattern matching for more natural language variations
       const amountMatch = text.match(/(\d+\.?\d*)\s*sbtc/i);
-      const recipientMatch = text.match(/to\s+(@\w+|bc\w+)/i);
+      
+      // Enhanced recipient matching to handle more patterns
+      let recipientMatch = text.match(/to\s+(@\w+|bc\w+)/i);
+      
+      // If no match with "to", try finding names
+      if (!recipientMatch) {
+        // Look for common name patterns
+        const nameMatch = text.match(/send\s+(\w+)|transfer\s+(\w+)|pay\s+(\w+)|send\s+to\s+(\w+)|\w+\s+send\s+(\w+)/i);
+        if (nameMatch) {
+          // Get the first non-undefined group
+          for (let i = 1; i < nameMatch.length; i++) {
+            if (nameMatch[i] && !nameMatch[i].match(/\d+\.?\d*\s*sbtc/i)) {
+              recipientMatch = ['', '@' + nameMatch[i].charAt(0).toUpperCase() + nameMatch[i].slice(1)];
+              break;
+            }
+          }
+        }
+      }
+      
+      // Further enhanced command detection with more natural language variations
+      const command = 
+        text.toLowerCase().includes('send') || 
+        text.toLowerCase().includes('transfer') || 
+        text.toLowerCase().includes('pay') ? 'send' : 
+        text.toLowerCase().includes('balance') || 
+        text.toLowerCase().includes('how much') || 
+        text.toLowerCase().includes('my account') ? 'balance' :
+        text.toLowerCase().includes('receive') || 
+        text.toLowerCase().includes('deposit') ? 'receive' :
+        text.toLowerCase().includes('history') || 
+        text.toLowerCase().includes('transactions') || 
+        text.toLowerCase().includes('recent') ? 'history' : 'unknown';
       
       return {
-        command: text.toLowerCase().includes('send') ? 'send' : 
-                 text.toLowerCase().includes('balance') ? 'balance' :
-                 text.toLowerCase().includes('receive') ? 'receive' :
-                 text.toLowerCase().includes('history') ? 'history' : 'unknown',
-        amount: amountMatch ? parseFloat(amountMatch[1]) : null,
+        command: command,
+        amount: amountMatch ? parseFloat(amountMatch[1]) : 0.1, // Default to 0.1 if not specified
         recipient: recipientMatch ? recipientMatch[1] : null
       };
     }
