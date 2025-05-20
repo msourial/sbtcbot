@@ -1,0 +1,148 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 20 14.3% 4.1%;
+  --muted: 60 4.8% 95.9%;
+  --muted-foreground: 25 5.3% 44.7%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 20 14.3% 4.1%;
+  --card: 0 0% 100%;
+  --card-foreground: 20 14.3% 4.1%;
+  --border: 20 5.9% 90%;
+  --input: 20 5.9% 90%;
+  --primary: 207 90% 54%;
+  --primary-foreground: 211 100% 99%;
+  --secondary: 60 4.8% 95.9%;
+  --secondary-foreground: 24 9.8% 10%;
+  --accent: 60 4.8% 95.9%;
+  --accent-foreground: 24 9.8% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 60 9.1% 97.8%;
+  --ring: 20 14.3% 4.1%;
+  --radius: 0.5rem;
+  
+  /* Custom Colors */
+  --bitcoin-gold: 44 100% 47%;
+  --bitcoin-light: 44 100% 88%;
+  --telegram-blue: 204 100% 40%;
+  --telegram-light: 204 93% 95%;
+  --crypto-green: 161 63% 40%;
+  --crypto-light: 161 63% 93%;
+  --status-success: 134 61% 41%;
+  --status-error: 354 70% 54%;
+  --status-warning: 45 100% 51%;
+}
+
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --primary: 207 90% 54%;
+  --primary-foreground: 211 100% 99%;
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 240 4.9% 83.9%;
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-[#E5F5FD] text-foreground;
+  }
+}
+
+@layer components {
+  .telegram-chat {
+    @apply max-w-[500px] mx-auto bg-white h-screen flex flex-col relative overflow-hidden;
+  }
+
+  .chat-bubble {
+    @apply relative max-w-[80%] rounded-[18px] py-3 px-4 mb-2;
+  }
+
+  .bot-bubble {
+    @apply bg-neutral-100 rounded-tl-[4px] self-start;
+  }
+
+  .user-bubble {
+    @apply bg-[#E5F5FD] rounded-tr-[4px] self-end;
+  }
+
+  .typing-indicator {
+    @apply flex items-center;
+  }
+
+  .typing-indicator span {
+    @apply h-2 w-2 bg-neutral-500 rounded-full inline-block mx-[1px] animate-typing;
+  }
+
+  .typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  .balance-card {
+    @apply bg-gradient-to-br from-[#F2A900] to-[#E67700] rounded-2xl text-white shadow-md shadow-[rgba(242,169,0,0.2)];
+  }
+
+  .transaction-card {
+    @apply rounded-xl bg-white shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5;
+  }
+
+  .command-input {
+    @apply rounded-3xl border-2 border-neutral-300 transition-all duration-200 focus-within:border-[#0088CC] focus-within:shadow-[0_0_0_3px_rgba(0,136,204,0.1)];
+  }
+
+  .btn-primary {
+    @apply bg-[#0088CC] text-white rounded-lg py-2.5 px-5 font-semibold transition-all duration-200 hover:bg-[#006EA6] hover:-translate-y-0.5;
+  }
+
+  .security-indicator {
+    @apply inline-block w-3 h-3 rounded-full mr-2;
+  }
+}
+
+@keyframes typing {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0); }
+}
+
+@layer utilities {
+  .animate-typing {
+    animation: typing 1s infinite;
+  }
+  
+  .security-high, .bg-status-success {
+    background-color: hsl(var(--status-success));
+  }
+  
+  .security-medium, .bg-status-warning {
+    background-color: hsl(var(--status-warning));
+  }
+  
+  .security-low, .bg-status-error {
+    background-color: hsl(var(--status-error));
+  }
+}
