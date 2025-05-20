@@ -17,11 +17,20 @@ export default function Home() {
     // The queryFn is already set up in queryClient.ts
   });
 
-  // Listen for transaction confirmation events
+  // Listen for transaction confirmation and wallet creation events
   useEffect(() => {
     const handleConfirmEvent = (event: any) => {
       if (event.detail && event.detail.message) {
-        handleSendMessage(event.detail.message);
+        // Special handling for wallet creation success
+        if (event.detail.message === "Wallet created successfully!") {
+          // Send a balance command automatically after wallet creation
+          setTimeout(() => {
+            sendCommand("/balance");
+          }, 500);
+        } else {
+          // For other messages, proceed normally
+          handleSendMessage(event.detail.message);
+        }
       }
     };
     
