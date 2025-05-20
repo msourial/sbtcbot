@@ -6,6 +6,7 @@ import TransactionList from "@/components/transaction/TransactionList";
 import ReceiveCard from "@/components/transaction/ReceiveCard";
 import SecurityAlert from "@/components/transaction/SecurityAlert";
 import ProcessingTransaction from "@/components/transaction/ProcessingTransaction";
+import BiometricWalletCreator from "@/components/wallet/BiometricWalletCreator";
 
 interface ChatBubbleProps {
   message: ChatMessage;
@@ -114,6 +115,40 @@ export default function ChatBubble({ message }: ChatBubbleProps) {
             <SecurityAlert />
           </div>
         );
+
+      case "createwallet":
+        {
+          const [isCompleted, setIsCompleted] = useState(false);
+          
+          const handleWalletCreated = (wallet: any) => {
+            setIsCompleted(true);
+            
+            // Tell the parent that a wallet was created
+            window.dispatchEvent(new CustomEvent("sendMessage", {
+              detail: { message: "Wallet created successfully!" }
+            }));
+          };
+          
+          const handleCancel = () => {
+            window.dispatchEvent(new CustomEvent("sendMessage", {
+              detail: { message: "Wallet creation cancelled." }
+            }));
+          };
+          
+          // If completed, don't show anything as subsequent messages will appear
+          if (isCompleted) {
+            return null;
+          }
+          
+          return (
+            <div ref={bubbleRef} className={`chat-bubble ${bubbleClass}`}>
+              <BiometricWalletCreator 
+                onCreated={handleWalletCreated}
+                onCancel={handleCancel}
+              />
+            </div>
+          );
+        }
 
       case "processing":
         return (
