@@ -412,19 +412,62 @@ async function simulateBotResponse(message: string, userId: number): Promise<any
   let responseContent = "I received your message!";
   let messageType = 'text';
   
-  // Check for specific keywords
-  if (/balance|how much/i.test(message)) {
-    messageType = 'balance';
-    responseContent = "Here's your current balance:";
-  } else if (/send/i.test(message) && /sbtc|bitcoin/i.test(message)) {
-    messageType = 'transaction';
-    responseContent = "Transaction Details";
-  } else if (/receive|address/i.test(message)) {
-    messageType = 'receive';
-    responseContent = "Here's your receiving address:";
-  } else if (/history|transactions/i.test(message)) {
-    messageType = 'history';
-    responseContent = "Recent Transactions";
+  try {
+    // First try to process the message as a natural language command
+    const nlpResult = await processNaturalLanguageCommand(message);
+    
+    // Generate a helpful response based on the detected intent
+    if (nlpResult.command === 'balance') {
+      messageType = 'balance';
+      responseContent = "Here's your current balance:";
+    } else if (nlpResult.command === 'send') {
+      // If we have both recipient and amount, create a transaction prompt
+      if (nlpResult.recipient && nlpResult.amount) {
+        messageType = 'transaction';
+        responseContent = `Would you like to send ${nlpResult.amount} sBTC to ${nlpResult.recipient}?`;
+      } 
+      // If we have recipient but no amount, ask for amount
+      else if (nlpResult.recipient && !nlpResult.amount) {
+        messageType = 'text';
+        responseContent = `How much would you like to send to ${nlpResult.recipient}?`;
+      }
+      // If we have amount but no recipient, ask for recipient 
+      else if (!nlpResult.recipient && nlpResult.amount) {
+        messageType = 'text';
+        responseContent = `Who would you like to send ${nlpResult.amount} sBTC to?`;
+      }
+      // If we have neither, ask for basic info
+      else {
+        messageType = 'text';
+        responseContent = "Sure, I can help you send sBTC. Who would you like to send it to, and how much?";
+      }
+    } else if (nlpResult.command === 'receive') {
+      messageType = 'receive';
+      responseContent = "Here's your receiving address:";
+    } else if (nlpResult.command === 'history') {
+      messageType = 'history';
+      responseContent = "Recent Transactions";
+    } else {
+      // Unknown command or general inquiry, provide helpful response
+      messageType = 'text';
+      responseContent = "I can help you manage your sBTC. You can ask me to check your balance, send money to someone, receive sBTC, or view your transaction history.";
+    }
+  } catch (error) {
+    console.error("Error in natural language processing:", error);
+    // Fallback to simple keyword matching
+    if (/balance|how much/i.test(message)) {
+      messageType = 'balance';
+      responseContent = "Here's your current balance:";
+    } else if (/send/i.test(message)) {
+      messageType = 'text';
+      responseContent = "Sure, I can help you send sBTC. Who would you like to send it to, and how much?";
+    } else if (/receive|address/i.test(message)) {
+      messageType = 'receive';
+      responseContent = "Here's your receiving address:";
+    } else if (/history|transactions/i.test(message)) {
+      messageType = 'history';
+      responseContent = "Recent Transactions";
+    }
   }
   
   // Store the bot response in the database
