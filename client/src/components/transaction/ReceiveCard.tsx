@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import QRCode from "qrcode.js";
+import QRCode from "qrcode";
 import { useToast } from "@/hooks/use-toast";
 
 export default function ReceiveCard() {
