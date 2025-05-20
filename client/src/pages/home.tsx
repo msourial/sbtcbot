@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ChatHeader from "@/components/chat/ChatHeader";
 import ChatBubble from "@/components/chat/ChatBubble";
@@ -16,6 +16,21 @@ export default function Home() {
     queryKey: ['/api/user'],
     // The queryFn is already set up in queryClient.ts
   });
+
+  // Listen for transaction confirmation events
+  useEffect(() => {
+    const handleConfirmEvent = (event: any) => {
+      if (event.detail && event.detail.message) {
+        handleSendMessage(event.detail.message);
+      }
+    };
+    
+    window.addEventListener("sendMessage", handleConfirmEvent);
+    
+    return () => {
+      window.removeEventListener("sendMessage", handleConfirmEvent);
+    };
+  }, []);
 
   const handleSendMessage = (message: string) => {
     if (message.startsWith('/')) {

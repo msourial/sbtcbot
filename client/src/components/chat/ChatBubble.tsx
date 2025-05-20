@@ -58,7 +58,24 @@ export default function ChatBubble({ message }: ChatBubbleProps) {
             {typeof message.content === "object" ? (
               message.content
             ) : (
-              <TransactionBubble />
+              <TransactionCard 
+                onConfirm={() => {
+                  const sendMessageFunc = (message: string) => {
+                    // Use window event to communicate with parent component
+                    window.dispatchEvent(new CustomEvent("sendMessage", {
+                      detail: { message: "confirm" }
+                    }));
+                  };
+                  
+                  // First show a processing message
+                  sendMessageFunc("Processing transaction...");
+                  
+                  // Then send the confirm command after a delay
+                  setTimeout(() => {
+                    sendMessageFunc("confirm");
+                  }, 1000);
+                }}
+              />
             )}
           </div>
         );
