@@ -317,9 +317,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-- **Website**: [www.sbtcbot.com](https://www.sbtcbot.com)
-- **Email**: team@sbtcbot.com
-- **Twitter**: [@sBTCBot](https://twitter.com/sBTCBot)
+
 - **Telegram**: [@sBTC_Bot_Support](https://t.me/sBTC_Bot_Support)
 
 ---
