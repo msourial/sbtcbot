@@ -60,7 +60,8 @@ export const insertWalletSchema = createInsertSchema(wallets).omit({
 export const insertTransactionSchema = createInsertSchema(transactions).omit({
   id: true,
   createdAt: true,
-  completedAt: true,
+}).extend({
+  completedAt: z.date().optional().nullable()
 });
 
 export const insertMessageSchema = createInsertSchema(messages).omit({

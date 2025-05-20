@@ -198,5 +198,18 @@ export class MemStorage implements IStorage {
   }
 }
 
-// Export a singleton instance
-export const storage = new MemStorage();
+// Import the database storage
+import { DatabaseStorage } from "./database-storage";
+
+// Check if database URL is available
+const useDatabase = !!process.env.DATABASE_URL;
+
+// Export the appropriate storage implementation
+export const storage = useDatabase 
+  ? new DatabaseStorage() 
+  : new MemStorage();
+
+// Log the storage type being used
+console.log(useDatabase 
+  ? "Using database storage." 
+  : "No database available. Using in-memory storage.");
