@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { ChatMessage } from "@shared/schema";
 import BalanceCard from "@/components/transaction/BalanceCard";
 import TransactionCard from "@/components/transaction/TransactionCard";
@@ -52,33 +52,45 @@ export default function ChatBubble({ message }: ChatBubbleProps) {
         );
 
       case "transaction":
-        return (
-          <div ref={bubbleRef} className={`chat-bubble ${bubbleClass}`}>
-            <p className="font-medium mb-3">Transaction Details</p>
-            {typeof message.content === "object" ? (
-              message.content
-            ) : (
-              <TransactionCard 
-                onConfirm={() => {
-                  const sendMessageFunc = (message: string) => {
-                    // Use window event to communicate with parent component
-                    window.dispatchEvent(new CustomEvent("sendMessage", {
-                      detail: { message: "confirm" }
-                    }));
-                  };
-                  
-                  // First show a processing message
-                  sendMessageFunc("Processing transaction...");
-                  
-                  // Then send the confirm command after a delay
-                  setTimeout(() => {
-                    sendMessageFunc("confirm");
-                  }, 1000);
-                }}
-              />
-            )}
-          </div>
-        );
+        {
+          const [isProcessing, setIsProcessing] = useState(false);
+          const [isConfirmed, setIsConfirmed] = useState(false);
+          
+          const handleConfirm = () => {
+            setIsProcessing(true);
+            
+            // Simulate transaction processing
+            setTimeout(() => {
+              setIsProcessing(false);
+              setIsConfirmed(true);
+              
+              // Send confirmation message to the parent component
+              window.dispatchEvent(new CustomEvent("sendMessage", {
+                detail: { message: "confirm" }
+              }));
+            }, 1500);
+          };
+          
+          // If already confirmed, don't show anything
+          if (isConfirmed) {
+            return null;
+          }
+          
+          return (
+            <div ref={bubbleRef} className={`chat-bubble ${bubbleClass}`}>
+              <p className="font-medium mb-3">Transaction Details</p>
+              {typeof message.content === "object" ? (
+                message.content
+              ) : isProcessing ? (
+                <ProcessingTransaction />
+              ) : (
+                <TransactionCard 
+                  onConfirm={handleConfirm}
+                />
+              )}
+            </div>
+          );
+        }
 
       case "history":
         return (
