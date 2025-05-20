@@ -8,12 +8,13 @@ interface UseChatResult {
   messages: ChatMessage[];
   sendMessage: (content: string, type?: string) => void;
   sendCommand: (command: string) => void;
+  clearConversation: () => void;
   isLoading: boolean;
 }
 
 export function useChat(): UseChatResult {
   const queryClient = useQueryClient();
-  const [messages, setMessages] = useState<ChatMessage[]>([
+  const defaultMessages = [
     {
       id: nanoid(),
       content: "Welcome to sBTC Bot! 👋\n\nBefore we start, you'll need to create a wallet to send and receive sBTC.",
@@ -28,7 +29,9 @@ export function useChat(): UseChatResult {
       messageType: "createwallet",
       timestamp: new Date(Date.now() + 100), // Add small delay for proper ordering
     },
-  ]);
+  ];
+  
+  const [messages, setMessages] = useState<ChatMessage[]>(defaultMessages);
 
   // Fetch chat history from the server
   const { data: chatHistory } = useQuery({
@@ -224,10 +227,20 @@ export function useChat(): UseChatResult {
     }
   };
 
+  // Function to clear the conversation and reset to initial state
+  const clearConversation = () => {
+    // Reset to default messages
+    setMessages([...defaultMessages]);
+    
+    // You could also clear server-side history here if needed
+    // by making an API call
+  };
+
   return {
     messages,
     sendMessage,
     sendCommand,
+    clearConversation,
     isLoading: isSending,
   };
 }

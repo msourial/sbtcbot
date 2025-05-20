@@ -1,7 +1,21 @@
 import { useState } from "react";
 
-export default function ChatHeader() {
+interface ChatHeaderProps {
+  onClearConversation?: () => void;
+}
+
+export default function ChatHeader({ onClearConversation }: ChatHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleClearConversation = () => {
+    // Close menu first
+    setIsMenuOpen(false);
+    
+    // Call the clear function if provided
+    if (onClearConversation) {
+      onClearConversation();
+    }
+  };
 
   return (
     <header className="bg-white shadow-sm p-4 flex items-center justify-between">
@@ -25,6 +39,12 @@ export default function ChatHeader() {
         
         {isMenuOpen && (
           <div className="absolute right-4 mt-2 w-48 bg-white rounded-md shadow-lg z-10 py-1">
+            <button 
+              onClick={handleClearConversation}
+              className="w-full text-left px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100"
+            >
+              <i className="ri-delete-bin-line mr-2"></i> Clear Conversation
+            </button>
             <button className="w-full text-left px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">
               <i className="ri-settings-line mr-2"></i> Settings
             </button>

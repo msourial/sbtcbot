@@ -9,7 +9,7 @@ import { useChat } from "@/hooks/use-chat";
 
 export default function Home() {
   const [showHelpModal, setShowHelpModal] = useState(false);
-  const { messages, sendMessage, sendCommand, isLoading } = useChat();
+  const { messages, sendMessage, sendCommand, clearConversation, isLoading } = useChat();
 
   // Fetch user data from the server
   const { data: userData } = useQuery({
@@ -62,7 +62,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#E5F5FD]">
       <div className="telegram-chat">
-        <ChatHeader />
+        <ChatHeader onClearConversation={clearConversation} />
         
         <div 
           className="flex-1 p-4 flex flex-col overflow-y-auto bg-white" 
