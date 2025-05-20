@@ -16,10 +16,17 @@ export function useChat(): UseChatResult {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: nanoid(),
-      content: "Welcome to sBTC Bot! 👋\n\nI help you send, receive, and manage your sBTC as easily as texting a friend.",
+      content: "Welcome to sBTC Bot! 👋\n\nBefore we start, you'll need to create a wallet to send and receive sBTC.",
       isFromUser: false,
       messageType: "text",
       timestamp: new Date(),
+    },
+    {
+      id: nanoid(),
+      content: "Create Wallet with Biometrics",
+      isFromUser: false,
+      messageType: "createwallet",
+      timestamp: new Date(Date.now() + 100), // Add small delay for proper ordering
     },
   ]);
 
@@ -39,7 +46,11 @@ export function useChat(): UseChatResult {
         timestamp: new Date(msg.createdAt || Date.now()),
       }));
       
-      setMessages((prev) => [prev[0], ...formattedHistory]);
+      // Skip initial wallet creation prompt if we have chat history
+      setMessages((prev) => {
+        // Replace the default messages with chat history
+        return formattedHistory;
+      });
     }
   }, [chatHistory]);
 
