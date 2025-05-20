@@ -58,7 +58,7 @@ export default function ChatBubble({ message }: ChatBubbleProps) {
             {typeof message.content === "object" ? (
               message.content
             ) : (
-              <TransactionCard />
+              <TransactionBubble />
             )}
           </div>
         );
