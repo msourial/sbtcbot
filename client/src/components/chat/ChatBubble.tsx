@@ -123,9 +123,12 @@ export default function ChatBubble({ message }: ChatBubbleProps) {
           const handleWalletCreated = (wallet: any) => {
             setIsCompleted(true);
             
-            // Tell the parent that a wallet was created
+            // Tell the parent that a wallet was created with wallet data
             window.dispatchEvent(new CustomEvent("sendMessage", {
-              detail: { message: "Wallet created successfully!" }
+              detail: { 
+                message: "Wallet created successfully!",
+                wallet: wallet 
+              }
             }));
           };
           

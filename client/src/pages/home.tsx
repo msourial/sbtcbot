@@ -17,16 +17,26 @@ export default function Home() {
     // The queryFn is already set up in queryClient.ts
   });
 
+  // Fetch wallet data
+  const { data: walletData } = useQuery({
+    queryKey: ['/api/wallet/address'],
+  });
+
   // Listen for transaction confirmation and wallet creation events
   useEffect(() => {
     const handleConfirmEvent = (event: any) => {
       if (event.detail && event.detail.message) {
         // Special handling for wallet creation success
         if (event.detail.message === "Wallet created successfully!") {
-          // Send a balance command automatically after wallet creation
+          // First, display wallet address
+          if (event.detail.wallet && event.detail.wallet.address) {
+            sendMessage(`Your wallet address: ${event.detail.wallet.address}`, 'text');
+          }
+          
+          // Then, send a balance command automatically after wallet creation
           setTimeout(() => {
             sendCommand("/balance");
-          }, 500);
+          }, 1000);
         } else {
           // For other messages, proceed normally
           handleSendMessage(event.detail.message);
@@ -40,6 +50,21 @@ export default function Home() {
       window.removeEventListener("sendMessage", handleConfirmEvent);
     };
   }, []);
+  
+  // Show wallet info when first logging in (if wallet exists)
+  useEffect(() => {
+    if (walletData && walletData.address) {
+      // Check if this is the first load and we have wallet data
+      // We don't want to show this message repeatedly on every data refresh
+      const hasWalletMessage = messages.some(msg => 
+        !msg.isFromUser && msg.content.includes('Your wallet address:')
+      );
+      
+      if (!hasWalletMessage && messages.length <= 3) {
+        sendMessage(`Your wallet address: ${walletData.address}`, 'text');
+      }
+    }
+  }, [walletData]);
 
   const handleSendMessage = (message: string) => {
     if (message.startsWith('/')) {
