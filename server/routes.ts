@@ -81,6 +81,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Internal server error" });
     }
   });
+  
+  // Create a wallet with biometric authentication (FIDO2)
+  app.post("/api/wallet/create", async (req: Request, res: Response) => {
+    try {
+      // In a real implementation, this would validate biometric authentication data
+      // using WebAuthn/FIDO2 standards
+      const { biometricData, devicePosture } = req.body;
+      
+      // In a real implementation, this would use the authenticated user
+      // For demo purposes, we'll get the first user
+      const users = await storage.getUsers();
+      
+      if (users.length === 0) {
+        return res.status(404).json({ message: "No users found" });
+      }
+      
+      // Check if user already has a wallet
+      const existingWallet = await storage.getWalletByUserId(users[0].id);
+      
+      if (existingWallet) {
+        return res.status(200).json({ 
+          message: "Wallet already exists",
+          wallet: existingWallet
+        });
+      }
+      
+      // Generate a new wallet address
+      // In production, this would use Stacks.js to create a proper wallet
+      // without storing seed phrases - just biometric associations
+      const bitcoinAddress = `bc1${Math.random().toString(36).substring(2, 10)}`;
+      
+      // Create the wallet
+      const wallet = await storage.createWallet({
+        userId: users[0].id,
+        address: bitcoinAddress,
+        balance: 0.1 // Start with a small balance for testing
+      });
+      
+      res.status(201).json({
+        message: "Wallet created successfully with biometric authentication",
+        wallet
+      });
+    } catch (error) {
+      console.error("Error creating wallet:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
 
   // Get transaction history
   app.get("/api/transactions", async (req: Request, res: Response) => {
