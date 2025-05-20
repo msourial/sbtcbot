@@ -46,7 +46,11 @@ export function useChat(): UseChatResult {
   // Send message mutation
   const { mutate: sendMessageMutation, isPending: isSending } = useMutation({
     mutationFn: async ({ content, type }: { content: string, type?: string }) => {
-      return apiRequest('POST', '/api/message', { content, messageType: type || 'text' });
+      return apiRequest('POST', '/api/message', { 
+        content, 
+        messageType: type || 'text',
+        isFromUser: true 
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/messages'] });
