@@ -219,12 +219,8 @@ export function useChat(): UseChatResult {
         });
       }, 3000);
     } else if (!content.includes('wallet address:')) {
-      // Default response - but skip if it's a wallet address message
-      // This prevents showing the fallback message for wallet address displays
-      addBotMessage({
-        content: "I'm not sure how to respond to that. Try using a command like /balance, /send, /receive, or /history.",
-        messageType: 'text',
-      });
+      // Process natural language commands
+      processNaturalLanguage(content);
     }
   };
 

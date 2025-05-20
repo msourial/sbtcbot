@@ -2,7 +2,7 @@ import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { initBot } from "./telegram/bot";
-import { analyzeTransactionSecurity } from "./services/claude";
+import { analyzeTransactionSecurity, processNaturalLanguageCommand } from "./services/claude";
 import { getTransactionFee, sendTransaction } from "./services/bitcoinService";
 import { z } from "zod";
 import { insertMessageSchema } from "@shared/schema";
